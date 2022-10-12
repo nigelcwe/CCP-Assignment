@@ -1,0 +1,301 @@
+package entities;
+
+import entities.drinks.Cappuccino;
+import entities.drinks.Drink;
+import entities.drinks.Juice;
+import runnable.customer.Customer;
+import runnable.staff.Staff;
+import runnable.staff.Waiter;
+
+import java.util.LinkedList;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
+
+public class Cafe {
+    public int numChair = 10;
+    public LinkedList<Customer> servingLst;
+    public LinkedList<Customer> seatingLst;
+    private BlockingQueue<Staff> glassQueue = new ArrayBlockingQueue<Staff>(1);
+    private BlockingQueue<Staff> cupQueue = new ArrayBlockingQueue<Staff>(1);
+    private BlockingQueue<Staff> juiceQueue = new ArrayBlockingQueue<Staff>(1);
+    private BlockingQueue<Staff> milkQueue = new ArrayBlockingQueue<Staff>(1);
+    private BlockingQueue<Staff> coffeeQueue = new ArrayBlockingQueue<Staff>(1);
+    private boolean lastOrder = false;
+    private boolean closingTime = false;
+
+    public Cafe() {
+        servingLst = new LinkedList<Customer>();
+        seatingLst = new LinkedList<Customer>();
+    }
+
+    public void serveCustomer(Staff staff) {
+        Customer customer;
+        synchronized (servingLst) {
+            while (servingLst.size() == 0) {
+                if (seatingLst.size() != 0) {
+                    System.out.println(staff.title + ": All customers have ordered.");
+                } else {
+                    System.out.println(staff.title + ": Cafe is empty.");
+                }
+                try {
+                    servingLst.wait();
+                } catch (InterruptedException e) {
+                    System.out.println(e.getStackTrace()[0]);
+                }
+            }
+            customer = (Customer)((LinkedList<?>)servingLst).poll();
+        }
+
+        // Checking for null customer and returning accordingly
+        if (customer.inTime == null) {
+            try {
+                if (staff.getClass() == Waiter.class) {
+                    while(!lastOrder) Thread.sleep(50);
+                    return;
+                }
+                if (!lastOrder) {
+                    while (!lastOrder) Thread.sleep(50);
+                } else {
+                    while (!closingTime) Thread.sleep(50);
+                }
+                return;
+            } catch (InterruptedException e) {
+                System.out.println(e.getStackTrace()[0]);
+            }
+        }
+
+        // Checking if customer is still in service list
+        if (!seatingLst.contains(customer)) return;
+
+        synchronized (customer) {
+            customer.hasOrdered = true;
+            customer.notify();
+            System.out.println(staff.title + " is serving " + customer.name);
+        }
+
+        // To reject customers who were already in the cafe
+        // before closing time but have not ordered.
+        if (closingTime) {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                System.out.println(e.getStackTrace()[0]);
+            }
+            synchronized (customer) {
+                customer.hasDrink = false;
+                customer.notify();
+            }
+            return;
+        }
+
+        // Prepping drinks
+        Drink drink;
+
+        if (customer.orderDrink()) {
+            drink = new Juice();
+            System.out.println(customer.name + " ordered a juice.");
+        } else {
+            drink = new Cappuccino();
+            System.out.println(customer.name + " ordered a cappuccino.");
+        }
+
+        if (drink.getClass() == Juice.class) {
+            Juice juice = (Juice)drink;
+            getGlass(juice, staff);
+            getJuice(juice, staff);
+            juice.isReady = true;
+            System.out.println("\u001B[34m" + staff.title + " is delivering the juice to " + customer.name + "\u001B[0m");
+        } else {
+            Cappuccino cappuccino = (Cappuccino)drink;
+            getCup(cappuccino, staff);
+            while (!cappuccino.isReady) {
+                getMilkOrCoffee(cappuccino, staff);
+                if (cappuccino.hasMilk && cappuccino.hasCoffee) {
+                    mixCappuccino(staff);
+                    cappuccino.isReady = true;
+                }
+            }
+            System.out.println("\u001B[34m" + staff.title + " is delivering the cappuccino to " + customer.name + "\u001B[0m");
+        }
+
+        synchronized (customer) {
+            customer.hasDrink = true;
+            customer.notify();
+        }
+    }
+
+    private void getGlass(Juice juice, Staff staff) {
+        try {
+            glassQueue.put(staff);
+            System.out.println("\u001B[34m" + staff.title + " is getting a glass.\u001B[0m");
+            Thread.sleep(600);
+            System.out.println("\u001B[34m" + staff.title + " got a glass.\u001B[0m");
+            glassQueue.take();
+            juice.hasGlass = true;
+        } catch (InterruptedException e) {
+            System.out.println(e.getStackTrace()[0]);
+        }
+    }
+
+    private void getJuice(Juice juice, Staff staff) {
+        try {
+            juiceQueue.put(staff);
+            System.out.println("\u001B[34m" + staff.title + " is getting juice.\u001B[0m");
+            Thread.sleep(1800);
+            System.out.println("\u001B[34m" + staff.title + " got some juice.\u001B[0m");
+            juiceQueue.take();
+            juice.hasJuice = true;
+        } catch (InterruptedException e) {
+            System.out.println(e.getStackTrace()[0]);
+        }
+    }
+
+    private void getCup(Cappuccino cappuccino, Staff staff) {
+        try {
+            cupQueue.put(staff);
+            System.out.println("\u001B[34m" + staff.title + " is getting a cup.\u001B[0m");
+            Thread.sleep(600);
+            System.out.println("\u001B[34m" + staff.title + " got a cup.\u001B[0m");
+            cupQueue.take();
+            cappuccino.hasCup = true;
+        } catch (InterruptedException e) {
+            System.out.println(e.getStackTrace()[0]);
+        }
+    }
+
+    private void getMilk(Cappuccino cappuccino, Staff staff) {
+        if (cappuccino.hasMilk) return;
+        try {
+            System.out.println("\u001B[34m" + staff.title + " is attempting to get milk.\u001B[0m");
+            boolean isAvailable = milkQueue.offer(staff);
+            if (!isAvailable) {
+                System.out.println("\u001B[34m" + staff.title + " failed to get milk.\u001B[0m");
+                return;
+            }
+            System.out.println("\u001B[34m" + staff.title + " is getting milk.\u001B[0m");
+            Thread.sleep(600);
+            milkQueue.take();
+            System.out.println("\u001B[34m" + staff.title + " got some milk.\u001B[0m");
+            cappuccino.hasMilk = true;
+        } catch (InterruptedException e) {
+            System.out.println(e.getStackTrace()[0]);
+        }
+    }
+
+    private void getCoffee(Cappuccino cappuccino, Staff staff) {
+        if (cappuccino.hasCoffee) return;
+        try {
+            System.out.println("\u001B[34m" + staff.title + " is attempting to get coffee.\u001B[0m");
+            boolean isAvailable = coffeeQueue.offer(staff);
+            if (!isAvailable) {
+                System.out.println("\u001B[34m" + staff.title + " failed to get coffee.\u001B[0m");
+                return;
+            }
+            System.out.println("\u001B[34m" + staff.title + " is getting coffee.\u001B[0m");
+            Thread.sleep(600);
+            System.out.println("\u001B[34m" + staff.title + " got some coffee.\u001B[0m");
+            coffeeQueue.take();
+            cappuccino.hasCoffee = true;
+        } catch (InterruptedException e) {
+            System.out.println(e.getStackTrace()[0]);
+        }
+    }
+
+    private void getMilkOrCoffee(Cappuccino cappuccino, Staff staff) {
+        getMilk(cappuccino, staff);
+        getCoffee(cappuccino, staff);
+    }
+
+    private void mixCappuccino(Staff staff) {
+        try {
+            System.out.println("\u001B[34m" + staff.title + " is mixing a cappuccino.\u001B[0m");
+            Thread.sleep(600);
+            System.out.println("\u001B[34m" + staff.title + " has finished mixing a cappuccino.\u001B[0m");
+        } catch (InterruptedException e) {
+            System.out.println(e.getStackTrace()[0]);
+        }
+    }
+
+    public synchronized void setLastOrder() {
+        lastOrder = true;
+    }
+
+    public synchronized void setClosingTime() {
+        closingTime = true;
+    }
+
+    public void add(Customer customer) {
+        // To filter out null customers as they do not need to be added into the seating list
+        if (customer.inTime == null) {
+            synchronized (servingLst) {
+                servingLst.offer(customer);
+                if (servingLst.size() == 1) {
+                    servingLst.notify();
+                }
+            }
+            return;
+        }
+
+        System.out.println("\u001B[33m" + customer.name + " entering cafe at " + customer.inTime + "\u001B[0m");
+
+        synchronized (seatingLst) {
+            if (seatingLst.size() == numChair) {
+                System.out.println("No chair available for " + customer.name);
+                System.out.println("\u001B[33m" + customer.name + " exits the cafe.\u001B[0m");
+                return;
+            }
+            seatingLst.offer(customer);
+        }
+        synchronized (servingLst) {
+            servingLst.offer(customer);
+            if (servingLst.size() == 1) {
+                servingLst.notify();
+            }
+        }
+    }
+
+    public boolean awaitOrder(Customer customer) {
+        long duration = 0;
+        try {
+            duration = (long)((Math.random()*4) + 1);
+            customer.wait(duration);
+        } catch (InterruptedException e) {
+            System.out.println(e.getStackTrace()[0]);
+        }
+        if (customer.hasOrdered) return true;
+        else {
+            synchronized (seatingLst) {
+                seatingLst.remove(customer);
+            }
+            System.out.println("\u001B[33m" + customer.name + " was not served within " + duration + " seconds and has left the cafe.\u001B[0m");
+            return false;
+        }
+    }
+
+    public void enjoyDrink(Customer customer) {
+        long duration = 0;
+        try {
+            customer.wait();
+
+            // Rejected customers
+            if (!customer.hasDrink) {
+                System.out.println("\u001B[33m" + customer.name + " was rejected and left.\u001B[0m");
+                seatingLst.remove(customer);
+                return;
+            }
+
+            // Normal customers
+            System.out.println(customer.name + " is enjoying their drink.");
+            duration = (long)((Math.random()*9) + 1);
+            TimeUnit.SECONDS.sleep(duration);
+            System.out.println(customer.name + " has finished their drink in " + duration + " seconds.");
+            synchronized (seatingLst) {
+                seatingLst.remove(customer);
+            }
+            System.out.println("\u001B[33m" + customer.name + " exits the cafe.\u001B[0m");
+        } catch (InterruptedException e) {
+            System.out.println(e.getStackTrace()[0]);
+        }
+    }
+}
