@@ -35,9 +35,9 @@ public class CustomerGenerator implements Runnable {
                 System.out.println(e.getStackTrace()[0]);
             }
         }
-        if (cafe.servingLst.size() == 0) {
-            createNullCustomer(cafe, 4);
-        }
+
+        createNullCustomer(cafe, 4);
+
         while (!closingTime) {
             try {
                 Thread.sleep(50);
@@ -45,9 +45,8 @@ public class CustomerGenerator implements Runnable {
                 System.out.println(e.getStackTrace()[0]);
             }
         }
-        if (cafe.servingLst.size() == 0) {
-            createNullCustomer(cafe, 4);
-        }
+
+        createNullCustomer(cafe, 4);
 
         System.out.println("\u001B[32m" + "Customer Generator has ended safely." + "\u001B[0m");
     }

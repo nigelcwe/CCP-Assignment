@@ -274,7 +274,7 @@ public class Cafe {
     }
 
     public void enjoyDrink(Customer customer) {
-        long duration = 0;
+        long duration = 2;
         try {
             customer.wait();
 
@@ -287,7 +287,6 @@ public class Cafe {
 
             // Normal customers
             System.out.println(customer.name + " is enjoying their drink.");
-            duration = (long)((Math.random()*9) + 1);
             TimeUnit.SECONDS.sleep(duration);
             System.out.println(customer.name + " has finished their drink in " + duration + " seconds.");
             synchronized (seatingLst) {

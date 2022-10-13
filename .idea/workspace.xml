@@ -4,24 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2c3b8bde-d963-4df1-8dd2-d4a93fbbba75" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/entities/Cafe.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/entities/drinks/Cappuccino.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/entities/drinks/Drink.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/entities/drinks/Juice.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/runnable/Clock.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/runnable/customer/Customer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/runnable/customer/CustomerGenerator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/runnable/staff/Owner.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/runnable/staff/Staff.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/runnable/staff/Waiter.java" afterDir="false" />
+    <list default="true" id="2c3b8bde-d963-4df1-8dd2-d4a93fbbba75" name="Changes" comment="Version 1.0 - Additional Features, Without statistics.">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/entities/Cafe.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/entities/Cafe.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/runnable/customer/CustomerGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/runnable/customer/CustomerGenerator.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,6 +63,14 @@
       <option name="presentableId" value="Default" />
       <updated>1665473859706</updated>
     </task>
+    <task id="LOCAL-00001" summary="Version 1.0 - Additional Features, Without statistics.">
+      <created>1665564754038</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1665564754038</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -89,5 +83,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Version 1.0 - Additional Features, Without statistics." />
+    <option name="LAST_COMMIT_MESSAGE" value="Version 1.0 - Additional Features, Without statistics." />
   </component>
 </project>
