@@ -30,7 +30,7 @@ public class CustomerGenerator implements Runnable {
                 count ++;
             }
             try {
-                TimeUnit.SECONDS.sleep((long)((Math.random() * 4) + 1));
+                TimeUnit.SECONDS.sleep((long)((Math.random() * 2) + 1));
             } catch (InterruptedException e) {
                 System.out.println(e.getStackTrace()[0]);
             }
