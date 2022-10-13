@@ -4,6 +4,7 @@ import entities.drinks.Cappuccino;
 import entities.drinks.Drink;
 import entities.drinks.Juice;
 import runnable.customer.Customer;
+import runnable.staff.Owner;
 import runnable.staff.Staff;
 import runnable.staff.Waiter;
 
@@ -11,6 +12,7 @@ import java.util.LinkedList;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Cafe {
     public int numChair = 10;
@@ -23,10 +25,16 @@ public class Cafe {
     private BlockingQueue<Staff> coffeeQueue = new ArrayBlockingQueue<Staff>(1);
     private boolean lastOrder = false;
     private boolean closingTime = false;
+    private AtomicInteger custCount;
+    private AtomicInteger juiceCount;
+    private AtomicInteger cappuccinoCount;
 
     public Cafe() {
         servingLst = new LinkedList<Customer>();
         seatingLst = new LinkedList<Customer>();
+        custCount = new AtomicInteger(0);
+        juiceCount = new AtomicInteger(0);
+        cappuccinoCount = new AtomicInteger(0);
     }
 
     public void serveCustomer(Staff staff) {
@@ -105,6 +113,7 @@ public class Cafe {
             getGlass(juice, staff);
             getJuice(juice, staff);
             juice.isReady = true;
+            juiceCount.getAndIncrement();
             System.out.println("\u001B[34m" + staff.title + " is delivering the juice to " + customer.name + "\u001B[0m");
         } else {
             Cappuccino cappuccino = (Cappuccino)drink;
@@ -116,8 +125,11 @@ public class Cafe {
                     cappuccino.isReady = true;
                 }
             }
+            cappuccinoCount.getAndIncrement();
             System.out.println("\u001B[34m" + staff.title + " is delivering the cappuccino to " + customer.name + "\u001B[0m");
         }
+
+        custCount.getAndIncrement();
 
         synchronized (customer) {
             customer.hasDrink = true;
@@ -296,5 +308,14 @@ public class Cafe {
         } catch (InterruptedException e) {
             System.out.println(e.getStackTrace()[0]);
         }
+    }
+
+    public void printStats() {
+        System.out.println("");
+        System.out.println("\u001B[35m" + "---------- Statistics for the day ----------" + "\u001B[0m");
+        System.out.println("Number of customers served : " + custCount.get());
+        System.out.println("Glasses of juice served    : " + juiceCount.get());
+        System.out.println("Cups of cappuccino served  : " + cappuccinoCount.get());
+        System.out.println("");
     }
 }

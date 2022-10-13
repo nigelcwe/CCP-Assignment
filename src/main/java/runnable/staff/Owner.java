@@ -60,6 +60,7 @@ public class Owner extends Staff {
             System.out.println(e.getStackTrace()[0]);
         }
         System.out.println(title + ": No customers left, going home now.");
+        cafe.printStats();
         System.out.println("\u001B[32m" + title + " has ended safely." + "\u001B[0m");
     }
 

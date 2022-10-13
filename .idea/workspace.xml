@@ -4,10 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2c3b8bde-d963-4df1-8dd2-d4a93fbbba75" name="Changes" comment="Version 1.0 - Additional Features, Without statistics.">
+    <list default="true" id="2c3b8bde-d963-4df1-8dd2-d4a93fbbba75" name="Changes" comment="Version 1.1 &#10;* CustomerGenerator now generates null customers unconditionally.&#10;* Customers now take 2 seconds to finish their drink instead of a random duration.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/entities/Cafe.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/entities/Cafe.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/runnable/customer/CustomerGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/runnable/customer/CustomerGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/runnable/staff/Owner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/runnable/staff/Owner.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,6 +23,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/src/main/java/runnable/Clock.java" root0="SKIP_INSPECTION" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -70,7 +73,14 @@
       <option name="project" value="LOCAL" />
       <updated>1665564754038</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Version 1.1 &#10;* CustomerGenerator now generates null customers unconditionally.&#10;* Customers now take 2 seconds to finish their drink instead of a random duration.">
+      <created>1665632145260</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1665632145260</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -86,6 +96,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Version 1.0 - Additional Features, Without statistics." />
-    <option name="LAST_COMMIT_MESSAGE" value="Version 1.0 - Additional Features, Without statistics." />
+    <MESSAGE value="Version 1.1 &#10;* CustomerGenerator now generates null customers unconditionally.&#10;* Customers now take 2 seconds to finish their drink instead of a random duration." />
+    <option name="LAST_COMMIT_MESSAGE" value="Version 1.1 &#10;* CustomerGenerator now generates null customers unconditionally.&#10;* Customers now take 2 seconds to finish their drink instead of a random duration." />
   </component>
 </project>
