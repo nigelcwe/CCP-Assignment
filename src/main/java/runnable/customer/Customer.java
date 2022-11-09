@@ -32,7 +32,7 @@ public class Customer implements Runnable {
         cafe.logStats(this);
     }
 
-    public boolean orderDrink() { //true = juice, false = cappuccino
+    public synchronized boolean orderDrink() { //true = juice, false = cappuccino
         Boolean randDrink = new Random().nextBoolean();
 //        Boolean randDrink = false;
         if (randDrink) System.out.println(Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + this.name + " orders a juice.");
