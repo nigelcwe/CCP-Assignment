@@ -2,6 +2,8 @@ package runnable.staff;
 
 import entities.Cafe;
 
+import java.time.LocalTime;
+
 public class Owner extends Staff {
     public Owner(Cafe cafe) {
         this.cafe = cafe;
@@ -14,7 +16,7 @@ public class Owner extends Staff {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println("\u001B[32m" + title + " has started." + "\u001B[0m");
+        System.out.println("\u001B[32m" + Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + title + " has started." + "\u001B[0m");
 
         while (!lastOrder) {
             cafe.serveCustomer(this);
@@ -25,11 +27,13 @@ public class Owner extends Staff {
         // Taking last order
         if (cafe.servingLst.size() > 0) cafe.serveCustomer(this);
 
-        while (!closingTime) {
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        synchronized (this) {
+            while (!closingTime) {
+                try {
+                    this.wait(50);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -41,17 +45,19 @@ public class Owner extends Staff {
         }
 
         if (cafe.seatingLst.size() > 0) {
-            System.out.println(title + ": There are \u001B[31m" + cafe.seatingLst.size() + "\u001B[0m more customers in the cafe.");
+            System.out.println(Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + title + ": There are \u001B[31m" + cafe.seatingLst.size() + "\u001B[0m more customers in the cafe.");
             int seatingLstSize = cafe.seatingLst.size();
-            while (cafe.seatingLst.size() > 0) {
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            synchronized (this) {
+                while (cafe.seatingLst.size() > 0) {
+                    try {
+                        this.wait(50);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    if (cafe.seatingLst.size() == seatingLstSize) continue;
+                    System.out.println(Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + title +  ": There are \u001B[31m" + cafe.seatingLst.size() + "\u001B[0m customers in the cafe.");
+                    seatingLstSize = cafe.seatingLst.size();
                 }
-                if (cafe.seatingLst.size() == seatingLstSize) continue;
-                System.out.println(title +  ": There are \u001B[31m" + cafe.seatingLst.size() + "\u001B[0m customers in the cafe.");
-                seatingLstSize = cafe.seatingLst.size();
             }
         }
         try {
@@ -59,17 +65,17 @@ public class Owner extends Staff {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println(title + ": No customers left, going home now.");
+        System.out.println(Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + title + ": No customers left, going home now.");
         cafe.printStats();
-        System.out.println("\u001B[32m" + title + " has ended safely." + "\u001B[0m");
+        System.out.println("\u001B[32m" + Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + title + " has ended safely." + "\u001B[0m");
     }
 
     public synchronized void setClosingTime() {
         closingTime = true;
-        System.out.println(title + ": We're closing now.");
+        System.out.println(Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + title + ": We're closing now.");
     }
 
     public void notifyLastOrder() {
-        System.out.println(title + ": Any last orders?");
+        System.out.println(Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + title + ": Any last orders?");
     }
 }

@@ -2,9 +2,9 @@ package runnable.customer;
 
 import entities.Cafe;
 
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 public class Customer implements Runnable {
     public String name;
@@ -33,8 +33,10 @@ public class Customer implements Runnable {
     }
 
     public boolean orderDrink() { //true = juice, false = cappuccino
-        Random randDrink = new Random();
-        return randDrink.nextBoolean();
-//        return false;
+        Boolean randDrink = new Random().nextBoolean();
+//        Boolean randDrink = false;
+        if (randDrink) System.out.println(Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + this.name + " orders a juice.");
+        else System.out.println(Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + this.name + " orders a cappuccino.");
+        return randDrink;
     }
 }

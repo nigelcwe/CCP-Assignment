@@ -13,9 +13,13 @@ public class main {
         Clock clock = new Clock(custGen, owner, waiter, cafe);
 
         Thread thOwner = new Thread(owner);
+        thOwner.setName("Thread-Owner");
         Thread thWaiter = new Thread(waiter);
+        thWaiter.setName("Thread-Waiter");
         Thread thCustGen = new Thread(custGen);
+        thCustGen.setName("Thread-CustGen");
         Thread thClock = new Thread(clock);
+        thClock.setName("Thread-Clock");
 
         thOwner.start();
         thWaiter.start();
