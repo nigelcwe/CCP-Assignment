@@ -4,6 +4,7 @@ import entities.drinks.Cappuccino;
 import entities.drinks.Drink;
 import entities.drinks.Juice;
 import runnable.customer.Customer;
+import runnable.staff.Owner;
 import runnable.staff.Staff;
 import runnable.staff.Waiter;
 
@@ -13,7 +14,6 @@ import java.time.LocalTime;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -22,11 +22,11 @@ public class Cafe {
     public int numChair = 10;
     public final LinkedList<Customer> servingLst;
     public final LinkedList<Customer> seatingLst;
-    private final BlockingQueue<Staff> glassQueue = new ArrayBlockingQueue<Staff>(1);
-    private final BlockingQueue<Staff> cupQueue = new ArrayBlockingQueue<Staff>(1);
-    private final BlockingQueue<Staff> juiceQueue = new ArrayBlockingQueue<Staff>(1);
-    private final BlockingQueue<Staff> milkQueue = new ArrayBlockingQueue<Staff>(1);
-    private final BlockingQueue<Staff> coffeeQueue = new ArrayBlockingQueue<Staff>(1);
+    private final ArrayBlockingQueue<Staff> glassQueue = new ArrayBlockingQueue<Staff>(1);
+    private final ArrayBlockingQueue<Staff> cupQueue = new ArrayBlockingQueue<Staff>(1);
+    private final ArrayBlockingQueue<Staff> juiceQueue = new ArrayBlockingQueue<Staff>(1);
+    private final ArrayBlockingQueue<Staff> milkQueue = new ArrayBlockingQueue<Staff>(1);
+    private final ArrayBlockingQueue<Staff> coffeeQueue = new ArrayBlockingQueue<Staff>(1);
     private boolean lastOrder = false;
     private boolean closingTime = false;
     private final AtomicInteger custCount;
@@ -60,31 +60,13 @@ public class Cafe {
                 }
                 try {
                     servingLst.wait();
+                    if (closingTime) return;
+                    if (lastOrder) return;
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
             customer = (Customer)((LinkedList<?>)servingLst).poll();
-        }
-
-        // Checking for null customer and returning accordingly
-        synchronized (staff) {
-            if (customer.inTime == null) {
-                try {
-                    if (staff.getClass() == Waiter.class) {
-                        while(!lastOrder) staff.wait(50);
-                        return;
-                    }
-                    if (!lastOrder) {
-                        while (!lastOrder) staff.wait(50);
-                    } else {
-                        while (!closingTime) staff.wait(50);
-                    }
-                    return;
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
         }
 
         // Checking if customer is still in seating list
@@ -262,17 +244,6 @@ public class Cafe {
     }
 
     public boolean add(Customer customer) {
-        // To filter out null customers as they do not need to be added into the seating list
-        if (customer.inTime == null) {
-            synchronized (servingLst) {
-                servingLst.offer(customer);
-                if (servingLst.size() == 1) {
-                    servingLst.notify();
-                }
-            }
-            return false;
-        }
-
         customer.inTime = new Date();
         System.out.println("\u001B[33m" + Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + customer.name + " trying to enter cafe at " + customer.inTime + "\u001B[0m");
 

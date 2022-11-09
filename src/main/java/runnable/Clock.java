@@ -36,17 +36,18 @@ public class Clock implements Runnable{
 
     public void notifyLastOrder() {
         System.out.println(Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + "Clock:\u001B[31m 10 minutes till closing.\u001B[0m");
-        cafe.setLastOrder();
-        custGen.setLastOrder();
         owner.setLastOrder();
         waiter.setLastOrder();
+        cafe.setLastOrder();
+        synchronized (cafe.servingLst) { cafe.servingLst.notifyAll(); }
     }
 
     public void notifyClosingTime() {
         System.out.println(Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + "Clock:\u001B[31m It's closing time.\u001B[0m");
-        cafe.setClosingTime();
-        custGen.setClosingTime();
         owner.setClosingTime();
         waiter.setClosingTime();
+        cafe.setClosingTime();
+        custGen.setClosingTime();
+        synchronized (cafe.servingLst) { cafe.servingLst.notifyAll(); }
     }
 }
