@@ -76,10 +76,10 @@ public class Owner extends Staff {
     }
 
     public void notifyClosingTime() {
-        System.out.println(Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + title + ": We're closing now.");
+        System.out.println(Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + title + ": \u001B[31mWe're closing now.\u001B[0m");
     }
 
     public void notifyLastOrder() {
-        System.out.println(Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + title + ": Any last orders?");
+        System.out.println(Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + title + ": \u001B[31mAny last orders?\u001B[0m");
     }
 }

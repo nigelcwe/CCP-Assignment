@@ -4,17 +4,12 @@ import entities.drinks.Cappuccino;
 import entities.drinks.Drink;
 import entities.drinks.Juice;
 import runnable.customer.Customer;
-import runnable.staff.Owner;
 import runnable.staff.Staff;
-import runnable.staff.Waiter;
 
-import java.sql.Time;
-import java.text.DecimalFormat;
 import java.time.LocalTime;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -22,11 +17,11 @@ public class Cafe {
     public int numChair = 10;
     public final LinkedList<Customer> servingLst;
     public final LinkedList<Customer> seatingLst;
-    private final ArrayBlockingQueue<Staff> glassQueue = new ArrayBlockingQueue<Staff>(1);
-    private final ArrayBlockingQueue<Staff> cupQueue = new ArrayBlockingQueue<Staff>(1);
-    private final ArrayBlockingQueue<Staff> juiceQueue = new ArrayBlockingQueue<Staff>(1);
-    private final ArrayBlockingQueue<Staff> milkQueue = new ArrayBlockingQueue<Staff>(1);
-    private final ArrayBlockingQueue<Staff> coffeeQueue = new ArrayBlockingQueue<Staff>(1);
+    private final ArrayBlockingQueue<Staff> glassQueue = new ArrayBlockingQueue<>(1);
+    private final ArrayBlockingQueue<Staff> cupQueue = new ArrayBlockingQueue<>(1);
+    private final ArrayBlockingQueue<Staff> juiceQueue = new ArrayBlockingQueue<>(1);
+    private final ArrayBlockingQueue<Staff> milkQueue = new ArrayBlockingQueue<>(1);
+    private final ArrayBlockingQueue<Staff> coffeeQueue = new ArrayBlockingQueue<>(1);
     private boolean lastOrder = false;
     private boolean closingTime = false;
     private final AtomicInteger custCount;
@@ -38,8 +33,8 @@ public class Cafe {
     private final AtomicLong totalWait;
 
     public Cafe() {
-        servingLst = new LinkedList<Customer>();
-        seatingLst = new LinkedList<Customer>();
+        servingLst = new LinkedList<>();
+        seatingLst = new LinkedList<>();
         custCount = new AtomicInteger(0);
         juiceCount = new AtomicInteger(0);
         cappuccinoCount = new AtomicInteger(0);
@@ -318,7 +313,7 @@ public class Cafe {
 
             // Normal customers
             System.out.println(Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + customer.name + " is enjoying their drink.");
-            TimeUnit.SECONDS.sleep(duration);
+            Thread.sleep(duration * 1000);
             System.out.println(Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + customer.name + " has finished their drink in " + duration + " seconds.");
             synchronized (seatingLst) {
                 seatingLst.remove(customer);

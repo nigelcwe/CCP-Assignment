@@ -4,7 +4,6 @@ import entities.Cafe;
 
 import java.time.LocalTime;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 public class CustomerGenerator implements Runnable {
     private final Cafe cafe;
@@ -30,7 +29,7 @@ public class CustomerGenerator implements Runnable {
                 count ++;
             }
             try {
-                TimeUnit.SECONDS.sleep((long)((Math.random() * 2) + 1));
+                Thread.sleep((long)((Math.random() * 2) + 1) * 1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
