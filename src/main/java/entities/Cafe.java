@@ -60,7 +60,7 @@ public class Cafe {
                 try {
                     servingLst.wait();
                 } catch (InterruptedException e) {
-                    System.out.println(e.getStackTrace()[0]);
+                    e.printStackTrace();
                 }
             }
             customer = (Customer)((LinkedList<?>)servingLst).poll();
@@ -80,7 +80,7 @@ public class Cafe {
                 }
                 return;
             } catch (InterruptedException e) {
-                System.out.println(e.getStackTrace()[0]);
+                e.printStackTrace();
             }
         }
 
@@ -99,7 +99,7 @@ public class Cafe {
             try {
                 Thread.sleep(50);
             } catch (InterruptedException e) {
-                System.out.println(e.getStackTrace()[0]);
+                e.printStackTrace();
             }
             synchronized (customer) {
                 customer.hasDrink = false;
@@ -157,7 +157,7 @@ public class Cafe {
             glassQueue.take();
             juice.hasGlass = true;
         } catch (InterruptedException e) {
-            System.out.println(e.getStackTrace()[0]);
+            e.printStackTrace();
         }
     }
 
@@ -170,7 +170,7 @@ public class Cafe {
             juiceQueue.take();
             juice.hasJuice = true;
         } catch (InterruptedException e) {
-            System.out.println(e.getStackTrace()[0]);
+            e.printStackTrace();
         }
     }
 
@@ -183,7 +183,7 @@ public class Cafe {
             cupQueue.take();
             cappuccino.hasCup = true;
         } catch (InterruptedException e) {
-            System.out.println(e.getStackTrace()[0]);
+            e.printStackTrace();
         }
     }
 
@@ -206,7 +206,7 @@ public class Cafe {
             System.out.println("\u001B[34m" + staff.title + " got some milk.\u001B[0m");
             cappuccino.hasMilk = true;
         } catch (InterruptedException e) {
-            System.out.println(e.getStackTrace()[0]);
+            e.printStackTrace();
         }
     }
 
@@ -229,7 +229,7 @@ public class Cafe {
             coffeeQueue.take();
             cappuccino.hasCoffee = true;
         } catch (InterruptedException e) {
-            System.out.println(e.getStackTrace()[0]);
+            e.printStackTrace();
         }
     }
 
@@ -244,7 +244,7 @@ public class Cafe {
             Thread.sleep(800);
             System.out.println("\u001B[34m" + staff.title + " has finished mixing a cappuccino.\u001B[0m");
         } catch (InterruptedException e) {
-            System.out.println(e.getStackTrace()[0]);
+            e.printStackTrace();
         }
     }
 
@@ -292,7 +292,7 @@ public class Cafe {
             duration = (long)((Math.random() * 2) + 1);
             customer.wait(duration * 1000);
         } catch (InterruptedException e) {
-            System.out.println(e.getStackTrace()[0]);
+            e.printStackTrace();
         }
         if (customer.hasOrdered) return true;
         else {
@@ -328,7 +328,7 @@ public class Cafe {
             }
             System.out.println("\u001B[33m" + customer.name + " exits the cafe.\u001B[0m");
         } catch (InterruptedException e) {
-            System.out.println(e.getStackTrace()[0]);
+            e.printStackTrace();
         }
     }
 

@@ -12,7 +12,7 @@ public class Owner extends Staff {
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
-            System.out.println(e.getStackTrace()[0]);
+            e.printStackTrace();
         }
         System.out.println("\u001B[32m" + title + " has started." + "\u001B[0m");
 
@@ -29,7 +29,7 @@ public class Owner extends Staff {
             try {
                 Thread.sleep(50);
             } catch (InterruptedException e) {
-                System.out.println(e.getStackTrace()[0]);
+                e.printStackTrace();
             }
         }
 
@@ -47,7 +47,7 @@ public class Owner extends Staff {
                 try {
                     Thread.sleep(50);
                 } catch (InterruptedException e) {
-                    System.out.println(e.getStackTrace()[0]);
+                    e.printStackTrace();
                 }
                 if (cafe.seatingLst.size() == seatingLstSize) continue;
                 System.out.println(title +  ": There are \u001B[31m" + cafe.seatingLst.size() + "\u001B[0m customers in the cafe.");
@@ -57,7 +57,7 @@ public class Owner extends Staff {
         try {
             Thread.sleep(50);
         } catch (InterruptedException e) {
-            System.out.println(e.getStackTrace()[0]);
+            e.printStackTrace();
         }
         System.out.println(title + ": No customers left, going home now.");
         cafe.printStats();

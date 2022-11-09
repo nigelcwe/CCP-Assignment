@@ -12,7 +12,7 @@ public class Waiter extends Staff {
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
-            System.out.println(e.getStackTrace()[0]);
+            e.printStackTrace();
         }
         System.out.println("\u001B[32m" + title + " has started." + "\u001B[0m");
         while (!lastOrder) {
@@ -23,7 +23,7 @@ public class Waiter extends Staff {
             try {
                 Thread.sleep(50);
             } catch (InterruptedException e) {
-                System.out.println(e.getStackTrace()[0]);
+                e.printStackTrace();
             }
         }
         System.out.println(title + ": Going home now.");

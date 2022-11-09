@@ -19,7 +19,7 @@ public class CustomerGenerator implements Runnable {
         try {
             Thread.sleep(105);
         } catch (InterruptedException e) {
-            System.out.println(e.getStackTrace()[0]);
+            e.printStackTrace();
         }
         System.out.println("\u001B[32m" + "Customer Generator has started." + "\u001B[0m");
         int count = 0;
@@ -32,7 +32,7 @@ public class CustomerGenerator implements Runnable {
             try {
                 TimeUnit.SECONDS.sleep((long)((Math.random() * 2) + 1));
             } catch (InterruptedException e) {
-                System.out.println(e.getStackTrace()[0]);
+                e.printStackTrace();
             }
         }
 
@@ -42,7 +42,7 @@ public class CustomerGenerator implements Runnable {
             try {
                 Thread.sleep(50);
             } catch (InterruptedException e) {
-                System.out.println(e.getStackTrace()[0]);
+                e.printStackTrace();
             }
         }
 

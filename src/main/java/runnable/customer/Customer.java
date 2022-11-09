@@ -35,5 +35,6 @@ public class Customer implements Runnable {
     public boolean orderDrink() { //true = juice, false = cappuccino
         Random randDrink = new Random();
         return randDrink.nextBoolean();
+//        return false;
     }
 }
