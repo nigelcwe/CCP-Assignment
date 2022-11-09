@@ -22,6 +22,19 @@ public class Owner extends Staff {
             cafe.serveCustomer(this);
         }
 
+        synchronized (this) {
+            while (!lastOrder) {
+                try {
+                    this.wait(50);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        if (!closingTime) {
+            notifyLastOrder();
+        }
         // ---------- Last Order ----------
 
         // Taking last order
@@ -36,6 +49,8 @@ public class Owner extends Staff {
                 }
             }
         }
+
+        notifyClosingTime();
 
         // ---------- Closing Time ----------
 
@@ -70,8 +85,7 @@ public class Owner extends Staff {
         System.out.println("\u001B[32m" + Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + title + " has ended safely." + "\u001B[0m");
     }
 
-    public synchronized void setClosingTime() {
-        closingTime = true;
+    public synchronized void notifyClosingTime() {
         System.out.println(Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + title + ": We're closing now.");
     }
 

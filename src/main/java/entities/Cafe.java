@@ -261,7 +261,7 @@ public class Cafe {
         closingTime = true;
     }
 
-    public void add(Customer customer) {
+    public boolean add(Customer customer) {
         // To filter out null customers as they do not need to be added into the seating list
         if (customer.inTime == null) {
             synchronized (servingLst) {
@@ -270,17 +270,31 @@ public class Cafe {
                     servingLst.notify();
                 }
             }
-            return;
+            return false;
         }
 
-        System.out.println("\u001B[33m" + Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + customer.name + " entering cafe at " + customer.inTime + "\u001B[0m");
+        customer.inTime = new Date();
+        System.out.println("\u001B[33m" + Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + customer.name + " trying to enter cafe at " + customer.inTime + "\u001B[0m");
 
+        if (lastOrder){
+            System.out.println(Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + "Cafe is only receiving last orders.");
+            System.out.println("\u001B[33m" + Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + customer.name + " leaves.\u001B[0m");
+            return false;
+        }
+        else if (closingTime){
+            System.out.println(Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + "Cafe is closed.");
+            System.out.println("\u001B[33m" + Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + customer.name + " leaves.\u001B[0m");
+            return false;
+        }
+        if (seatingLst.size() == numChair) {
+            System.out.println(Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + "No chair available for " + customer.name);
+            System.out.println("\u001B[33m" + Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + customer.name + " leaves.\u001B[0m");
+            return false;
+        }
+
+        customer.inTime = new Date();
+        System.out.println("\u001B[33m" + Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + customer.name + " successfully enters the cafe at " + customer.inTime + "\u001B[0m");
         synchronized (seatingLst) {
-            if (seatingLst.size() == numChair) {
-                System.out.println(Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + "No chair available for " + customer.name);
-                System.out.println(Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + "\u001B[33m" + customer.name + " exits the cafe.\u001B[0m");
-                return;
-            }
             seatingLst.offer(customer);
         }
         synchronized (servingLst) {
@@ -289,6 +303,7 @@ public class Cafe {
                 servingLst.notify();
             }
         }
+        return true;
     }
 
     public boolean awaitOrder(Customer customer) {

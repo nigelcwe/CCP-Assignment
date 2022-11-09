@@ -38,7 +38,6 @@ public class Clock implements Runnable{
         System.out.println(Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + "Clock:\u001B[31m 10 minutes till closing.\u001B[0m");
         cafe.setLastOrder();
         custGen.setLastOrder();
-        owner.notifyLastOrder();
         owner.setLastOrder();
         waiter.setLastOrder();
     }

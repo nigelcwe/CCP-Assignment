@@ -24,8 +24,8 @@ public class Customer implements Runnable {
     }
 
     private synchronized void goForDrink() {
-        cafe.add(this);
-        if (inTime == null) return;
+        boolean hasEntered = cafe.add(this);
+        if (!hasEntered) return;
         boolean tryOrder = cafe.awaitOrder(this);
         if (!tryOrder) return;
         cafe.enjoyDrink(this);

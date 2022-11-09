@@ -24,6 +24,21 @@ public class CustomerGenerator implements Runnable {
         }
         System.out.println("\u001B[32m" + Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + "Customer Generator has started." + "\u001B[0m");
         int count = 0;
+        while (!lastOrder) {
+            if (count == 10) break;
+            if (count < 10) {
+                createCustomer(cafe);
+                count ++;
+            }
+            try {
+                TimeUnit.SECONDS.sleep((long)((Math.random() * 2) + 1));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        createNullCustomer(cafe, 4);
+
         while (!closingTime) {
             if (count == 10) break;
             if (count < 10) {
@@ -31,13 +46,11 @@ public class CustomerGenerator implements Runnable {
                 count ++;
             }
             try {
-                TimeUnit.SECONDS.sleep((long)((Math.random() * 3) + 1));
+                TimeUnit.SECONDS.sleep((long)((Math.random() * 2) + 1));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-
-        createNullCustomer(cafe, 4);
 
         synchronized (this) {
             while (!closingTime) {
