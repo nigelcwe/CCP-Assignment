@@ -85,7 +85,7 @@ public class Owner extends Staff {
         System.out.println("\u001B[32m" + Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + title + " has ended safely." + "\u001B[0m");
     }
 
-    public synchronized void notifyClosingTime() {
+    public  void notifyClosingTime() {
         System.out.println(Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + title + ": We're closing now.");
     }
 

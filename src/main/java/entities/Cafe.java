@@ -253,11 +253,11 @@ public class Cafe {
         }
     }
 
-    public synchronized void setLastOrder() {
+    public void setLastOrder() {
         lastOrder = true;
     }
 
-    public synchronized void setClosingTime() {
+    public void setClosingTime() {
         closingTime = true;
     }
 
