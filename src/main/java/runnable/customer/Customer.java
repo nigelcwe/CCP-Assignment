@@ -29,7 +29,6 @@ public class Customer implements Runnable {
         boolean tryOrder = cafe.awaitOrder(this);
         if (!tryOrder) return;
         cafe.enjoyDrink(this);
-        cafe.logStats(this);
     }
 
     public synchronized boolean orderDrink() { //true = juice, false = cappuccino

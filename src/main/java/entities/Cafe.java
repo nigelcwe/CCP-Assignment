@@ -3,6 +3,8 @@ package entities;
 import entities.drinks.Cappuccino;
 import entities.drinks.Drink;
 import entities.drinks.Juice;
+import entities.misc.SynchronizedInt;
+import entities.misc.SynchronizedLong;
 import runnable.customer.Customer;
 import runnable.staff.Staff;
 
@@ -10,8 +12,6 @@ import java.time.LocalTime;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class Cafe {
     public int numChair = 10;
@@ -24,24 +24,24 @@ public class Cafe {
     private final ArrayBlockingQueue<Staff> coffeeQueue = new ArrayBlockingQueue<>(1);
     private boolean lastOrder = false;
     private boolean closingTime = false;
-    private final AtomicInteger custCount;
-    private final AtomicInteger juiceCount;
-    private final AtomicInteger cappuccinoCount;
-    private final AtomicLong minWait;
-    private final AtomicLong maxWait;
-    private final AtomicLong avgWait;
-    private final AtomicLong totalWait;
+    private final SynchronizedInt custCount;
+    private final SynchronizedInt juiceCount;
+    private final SynchronizedInt cappuccinoCount;
+    private final SynchronizedLong minWait;
+    private final SynchronizedLong maxWait;
+    private final SynchronizedLong avgWait;
+    private final SynchronizedLong totalWait;
 
     public Cafe() {
         servingLst = new LinkedList<>();
         seatingLst = new LinkedList<>();
-        custCount = new AtomicInteger(0);
-        juiceCount = new AtomicInteger(0);
-        cappuccinoCount = new AtomicInteger(0);
-        minWait = new AtomicLong(0);
-        maxWait = new AtomicLong(0);
-        avgWait = new AtomicLong(0);
-        totalWait = new AtomicLong(0);
+        custCount = new SynchronizedInt();
+        juiceCount = new SynchronizedInt();
+        cappuccinoCount = new SynchronizedInt();
+        minWait = new SynchronizedLong();
+        maxWait = new SynchronizedLong();
+        avgWait = new SynchronizedLong();
+        totalWait = new SynchronizedLong();
     }
 
     public void serveCustomer(Staff staff) {
@@ -106,7 +106,7 @@ public class Cafe {
             getGlass(juice, staff);
             getJuice(juice, staff);
             juice.isReady = true;
-            juiceCount.getAndIncrement();
+            juiceCount.increment();
             System.out.println("\u001B[34m" + Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + staff.title + " has delivered the juice to " + customer.name + "\u001B[0m");
         } else {
             Cappuccino cappuccino = (Cappuccino)drink;
@@ -118,11 +118,11 @@ public class Cafe {
                     cappuccino.isReady = true;
                 }
             }
-            cappuccinoCount.getAndIncrement();
+            cappuccinoCount.increment();
             System.out.println("\u001B[34m" + Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + staff.title + " has delivered the cappuccino to " + customer.name + "\u001B[0m");
         }
 
-        custCount.getAndIncrement();
+        custCount.increment();
 
         synchronized (customer) {
             customer.hasDrink = true;
@@ -311,34 +311,35 @@ public class Cafe {
             // Calculating waitingDuration
             customer.waitingDuration = new Date().getTime() - customer.inTime.getTime();
 
-            // Normal customers
             System.out.println(Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + customer.name + " is enjoying their drink.");
             Thread.sleep(duration * 1000);
             System.out.println(Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + customer.name + " has finished their drink in " + duration + " seconds.");
             synchronized (seatingLst) {
                 seatingLst.remove(customer);
             }
+            logStats(customer);
             System.out.println("\u001B[33m" + Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + customer.name + " exits the cafe.\u001B[0m");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    public void logStats(Customer customer) {
+    private void logStats(Customer customer) {
+        System.out.println(Thread.currentThread().getName() + " : " + LocalTime.now() + " : " + customer.name + " is providing their waiting statistics.");
 
         // Filter out rejected customers
-        if (!customer.hasDrink) return;
+//        if (!customer.hasDrink) return;
 
-        totalWait.getAndAdd(customer.waitingDuration);
+        totalWait.add(customer.waitingDuration);
         if (minWait.get() == 0) {
-            minWait.getAndSet(customer.waitingDuration);
-            maxWait.getAndSet(customer.waitingDuration);
-            avgWait.getAndSet(customer.waitingDuration);
+            minWait.set(customer.waitingDuration);
+            maxWait.set(customer.waitingDuration);
+            avgWait.set(customer.waitingDuration);
             return;
         }
-        if (customer.waitingDuration < minWait.get()) minWait.getAndSet(customer.waitingDuration);
-        if (customer.waitingDuration > maxWait.get()) maxWait.getAndSet(customer.waitingDuration);
-        avgWait.getAndSet(totalWait.get() / custCount.get());
+        if (customer.waitingDuration < minWait.get()) minWait.set(customer.waitingDuration);
+        if (customer.waitingDuration > maxWait.get()) maxWait.set(customer.waitingDuration);
+        avgWait.set(totalWait.get() / custCount.get());
     }
 
     public void printStats() {
